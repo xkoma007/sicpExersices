@@ -7,7 +7,7 @@
 
 (last-pair (list 23 72 149 34 ))
 
-;;2.18
+;;2.18 . modify
 
 (define (reverse items)
   (define (minus-last items) 
