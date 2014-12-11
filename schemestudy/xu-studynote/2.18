@@ -1,0 +1,54 @@
+Petite Chez Scheme Version 8.4
+Copyright (c) 1985-2011 Cadence Research Systems
+
+> (define (append list1 list2)
+    (if (null? list1)
+	list2
+	(cons (car list1) (append (cdr list1) list2))))
+> (append (list 12 3 4 4) (list 2 33 4))
+(12 3 4 4 2 33 4)
+> (cons x y)
+> (cons x nil)
+
+Exception: variable nil is not bound
+Type (debug) to enter the debugger.
+> (list 1)
+(1)
+> (define (reverse x)
+    (if (null? (cdr (cdr x)))
+	(cdr x)
+
+Exception: variable x is not bound
+Type (debug) to enter the debugger.
+> (cdr x)
+
+Exception: variable x is not bound
+Type (debug) to enter the debugger.
+> (define (reverse x)
+    (if (null? (cdr (cdr x)))
+	(cdr (cdr x))
+	(append (reverse (cdr x)) (list (car x)))))
+> (reverse (list 1 2 3 4 5))
+(5 3 2 1)
+> (define (reverse x)
+    (if (null? (cdr x)
+	x
+	(append (reverse (cdr x)) (list (car x)))))
+> (reverse (list 1 2 34))
+(1)
+> (reverse (list 1 2 3 4 5 56))
+(4 3 2 1)
+> (if (null? (cdr x)
+	x
+	(append (reverse (cdr x)) (list (car x)))))
+
+Exception: invalid syntax (if (null? (cdr x) x (append (...) (...))))
+Type (debug) to enter the debugger.
+> (define nil '())
+> (define (reverse x)
+    (if (null? (cdr x))
+	x
+	(append (reverse (cdr x)) (list (car x)))))
+> (reverse (list 1 2 3 4))
+(4 3 2 1)
+> 
