@@ -9,7 +9,6 @@
        set
        (cons x set)))
 
-
 (define  (intersection-set set1 set2)
   (cond ((or (null? set1) (null? set2)) '())
 	     ((element-of-set? (car set1) set2)  
@@ -17,7 +16,7 @@
 		         (intersection-set (cdr set1) set2)))
 	     (else (intersection-set (cdr set1) set2))))   ;因为 所需步数为 两个集合大小的乘积，所以说复杂度为 O(n2)
 
-;;;test  2.59
+;;;test  2.59  
 (define (union-set set1 set2)
   (cond  ((null? set1) set2)
 	      ((null?  set2) set1)
@@ -25,15 +24,37 @@
 	        (union-set (cdr set1) set2))
 	      (else (cons (car set1) (union-set (cdr set1) set2)))))
 
+
 ;;; test case
-  (define  set1 (list 1 3 4 7 8 9 10))
+ (define  set1 (list 1 3 4 7 8 9 10))
  (define set2 (list 2 5 4 7 10 12))
 (element-of-set?  3 set1)
 (union-set set1 set2)
 
 (intersection-set set1 set2)
 
-;;; 2.60
+;;; 2.60 //some problem
+(define  (element-of-set? x set) 
+             (cond   ((null? set) false)
+		         ((equal? x (car set)) true)
+			 (else  (element-of-set? x (cdr set)))))  ; the same with  before
+
+(define (adjoin-set x set)
+ (cons x set))
+
+(define (union-set set1 set2)
+  (cond  ((null? set1) set2)
+	      ((null?  set2) set1)
+	      ((element-of-set? (car set1) set2)
+	        (union-set (cdr set1) set2))
+	      (else (cons (car set1) (union-set (cdr set1) set2)))))
+
+(define  (intersection-set set1 set2)
+  (cond ((or (null? set1) (null? set2)) '())
+	     ((element-of-set? (car set1) set2)  
+	       (cons (car set1)
+		         (intersection-set (cdr set1) set2)))
+	     (else (intersection-set (cdr set1) set2))))
 
 ;;; 集合作为排序的表
 
@@ -41,7 +62,7 @@
   (cond ((null? set) false)
 	     ((= x (car set)) true)
 	     ((< x (car set)) false)
-	     (else (element-of-set? x (cdr set)))))   ;
+	     (else (element-of-set? x (cdr set))))) ;
 
 (define (intersection-set set1 set2)
   (if (or (null? set1) (null? set2))
@@ -55,7 +76,29 @@
 			   (intersection-set  set1  (cdr set2)))))))  ;O(N)
 
 ;;; 2.61
-;;; 2.62
+(define (adjoin-set x set)
+   (cond 
+    ((null? set) (list x))
+    ((< x  (car set)) (cons x set))
+    ((= x (car set))  set)
+    (else  (cons (car set) (adjoin-set x (cdr set))))))
+
+;;;2.62
+(define (union-set set1 set2)
+  (cond 
+     ((null? set1)  set2)
+     ((null? set2)  set1)
+     (else  (let  ( (x1 (car set1))  (x2 (car set2)))
+	      (cond 
+	       ((= x1 x2)  (union-set (cdr set1) set2))
+	       ((> x1 x2)   (cons x2 (union-set  set1 (cdr set2))))
+	       (else   (cons x1 (union-set (cdr set1) set2))))))))
+;;; test
+ (define  set1 (list 1 3 4 7 8 13 25))
+ (define set2 (list 2 5 4 7 10 12 13))
+(adjoin-set  26  set1)
+(union-set set1 set2)
+(intersection-set  set1  set2)p
 
 ;;; 集合作为二叉树
 (define (entry tree) (car tree))
