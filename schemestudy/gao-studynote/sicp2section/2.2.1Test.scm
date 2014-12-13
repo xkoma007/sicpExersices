@@ -16,11 +16,11 @@
 	(cons (car items) (minus-last (cdr items)))))
   (if (null?  items)
       '()
-      (cons (last-pair items) (reverse (minus-last items)))))
+      (cons  (car (last-pair items)) (reverse (minus-last items)))))
+
 (reverse (list 1 4 9 16 25))
 
-
-;;2.18简洁版正向思维
+;;2.18简洁版正向思维,效率比较高
 ;;; 18-reverse.scm
 
 (define (reverse lst)
