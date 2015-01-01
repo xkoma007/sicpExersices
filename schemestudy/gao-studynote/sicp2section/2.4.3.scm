@@ -2,6 +2,7 @@
 ;;; 我们需要采用 新的程序设计方法：数据导向的程序设计。
 
 
+
 (define global-array '())
 
 (define (make-entry k v) (list k v))
@@ -53,7 +54,7 @@
 (get 'imag-part '(rectangular))
 (get 'imag-part (list 'rectangular 'rectangular ))
 (get 'imag-part '(polar))
-(install-polar-package)
+;; (install-polar-package)
 
 
 ;;; Alyssa
@@ -113,3 +114,73 @@
 (define (magnitude z) (apply-generic 'magnitude z))
 (define (angle z) (apply-generic 'angle z))
 
+;;; test 2.73
+
+;; (define (deriv exp var)
+;;   (cond ((number? exp) 0)
+;; 	         ((variable? exp) (if (same-variable? exp var) 1 0))
+;; 		 ((sum? exp)
+;; 		  (make-sum (deriv (addend exp ) var)
+;; 			               (deriv (augend exp) var)))
+;; 		 ((product? exp)
+;; 		  (make-sum 
+;; 		      (make-product (multiplier exp)
+;; 				                 (deriv (multiplicand exp) var))
+;; 		      (make-product (deriv (multiplier exp) var)
+;; 				                 (multiplicand exp))))
+;; 		 ;;other rules
+;; 		 (else (error "unknown expression type -- DERIV" exp))))
+
+
+;; 1.  number? same-varibale? 不能对 数据进行简化，只能判断类型，它们不能够完整的描述一个表达式，所以这里我们不能够进行数据导向分派。
+
+;;2.
+
+
+             (define (deriv exp var)
+	                  (cond  ((number? exp) 0)
+			      	      ((variable? exp) (if (same-variable? exp var) 1 0))
+				      (else  ((get 'deriv (operator exp))  (operands exp)
+			                                                             var))))
+             (define (operator exp) (car exp))
+             (define (operands exp) (cdr  exp))
+
+
+;;; make-product  simplified
+(define (make-product m1 m2)
+             (cond ((or (=number? m1 0) (=number? m2 0)) 0)
+		        ((=number? m1 1) m2)
+			((=number? m2 1) m1)
+			((and (number? m1) (number? m2)) (* m1 m2))
+			(else (list '* m1 m2))))
+
+(define (make-sum a1 a2) 
+              (cond ((=number? a1 0) a2)
+		         ((=number? a2 0) a1)
+			  ((and (number? a1) (number? a2)) (+ a1 a2))
+			  (else (list '+ a1 a2))))
+
+(define (install-add-func)
+  (define (add-deriv exp var)
+                           (make-sum (deriv (car exp) var)
+				                (deriv (cadr exp) var)))
+   (put  'deriv  '+ add-deriv)
+ 'done)
+
+   (define (install-product-func)
+  (define (product-deriv exp var) 
+                           (make-sum 
+			    (make-product  (cadr exp)
+			                	        (deriv (car exp) var))
+			    (make-product (car exp)
+					               (deriv (cadr exp) var))))
+                            (put  'deriv  '*   product-deriv)
+	      'done)
+
+
+             (install-add-func)
+             (install-product-func)
+
+
+(deriv '(* (* x y) (+ x 3))  'x)
+(deriv '(+ x 3)  'x)
