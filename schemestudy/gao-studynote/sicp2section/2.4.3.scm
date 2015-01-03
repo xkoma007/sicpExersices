@@ -132,10 +132,14 @@
 ;; 		 (else (error "unknown expression type -- DERIV" exp))))
 
 
-;; 1.  number? same-varibale? 不能对 数据进行简化，只能判断类型，它们不能够完整的描述一个表达式，所以这里我们不能够进行数据导向分派。
+;; a.  number? same-varibale? 不能对 数据进行简化，只能判断类型，它们不能够完整的描述一个表达式，所以这里我们不能够进行数据导向分派。
 
-;;2.
-
+;;b.
+         (define (variable? x)  (symbol? x))
+                    (define (same-variable? v1 v2)
+		                  (and (variable? v1) (variable? v2) (eq? v1 v2)))
+                   (define (=number? exp num)
+		                 (and (number? exp) (= exp num)))
 
              (define (deriv exp var)
 	                  (cond  ((number? exp) 0)
@@ -177,10 +181,49 @@
                             (put  'deriv  '*   product-deriv)
 	      'done)
 
-
-             (install-add-func)
+      (install-add-func)
              (install-product-func)
 
 
 (deriv '(* (* x y) (+ x 3))  'x)
 (deriv '(+ x 3)  'x)
+;;; c.
+
+(define (install-exponentiation-func)
+              (define (make-exponentiation  u n )
+		(if (> n 1) 
+		    (list  '** u n)
+		    u))
+	      (define (base x) (car x))
+	      (define (exponent x) (cadr x))
+
+	      (define (exponentiation-func exp var)
+   	                   (make-product (exponent exp)
+					              (make-product 
+						       (make-exponentiation 
+							(base exp) (- (exponent exp) 1))
+						       (deriv (base exp) var))))
+	      (put 'deriv '** exponentiation-func)
+             'done)
+(install-exponentiation-func)
+(deriv '(+ (** x 5)  (* y x)) 'x)
+;;; d.
+
+exc
+
+;;; test 2.74
+
+
+;;; message dispatch
+
+(define (make-from-real-imag x y)
+              (define (dispatch op)
+		 (cond  ((eq? op 'real-part) x)
+			     ((eq? ip 'imag-part) y)
+			     ((eq? op 'magnitude)
+			      (sqrt (+ (square x) (square y))))
+			     ((eq? op 'angle) (atan y x))
+			     (else (error "Unknown ip -- MAKE-FROM-REAL-IMAG" op))))
+	      dispatch)
+
+(define (apply-gereric op arg)  (arg op))

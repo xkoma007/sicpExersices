@@ -1,5 +1,4 @@
 
-
 (define (variable? x)  (symbol? x))
 (define (same-variable? v1 v2)
              (and (variable? v1) (variable? v2) (eq? v1 v2)))
@@ -28,11 +27,20 @@
 (define (augend s) (caddr s))
 
 (define (product? x) 
-  (and  (pair? x)  (eq? (car x) '*))
-  )
+  (and  (pair? x)  (eq? (car x) '*))  )
 
 (define (multiplier p) (cadr p))
 (define (multiplicand p) (caddr p))
+
+          (define (make-exponentiation  u n )
+	               (if (> n 1) 
+			   (list  '** u n)
+			   u))
+          (define (base x) (cadr x))
+          (define (exponent x) (caddr x))
+          (define  (exponentiation? x)
+	    (and  (pair? x) (eq?  (car x) '**)))
+
 
 
 (define (deriv exp var)
@@ -47,7 +55,18 @@
 				                 (deriv (multiplicand exp) var))
 		      (make-product (deriv (multiplier exp) var)
 				                 (multiplicand exp))))
-		 ;;other rules
-		 (else (error "unknown expression type -- DERIV" exp))))
+		        ((exponentiation? exp)
+			                 (make-product (exponent exp)
+						                    (make-product 
+								       (make-exponentiation 
+									         (base exp) (- (exponent exp) 1))
+								                 (deriv (base exp) var))))
+			(else (error "unknown expression type -- DERIV" exp))))
 
 (deriv '(* (* x y) (+ x 3))  'x)
+
+;;; test 2.56
+(define exp '(** x 1))
+(deriv '(+ (** x 2)  (* 2 x)) 'x)
+(deriv '(+ (** x 5)  (* y x)) 'x)
+
