@@ -1,4 +1,3 @@
-
 ;;; 赋值和局部状态
 
 ;;; 局部状态变量
@@ -22,6 +21,7 @@
 	       "Insufficient funds"))))
 
 (new-withdraw 20)
+      (new-withdraw 10)
 
 (define (make-withdraw balance)
        (lambda (amount)
@@ -88,34 +88,40 @@
 ;;; 3.3,3.4
 
 (define (make-account   balance correct-password)
-     (define (withdraw amount)
-          (if  (>= balance amount)
-	       (begin (set! balance (- balance amount))
-		      balance)
-	       "Insufficient funds"))
-     (define (deposit amount)
-         (begin   (set! balance (+ balance amount))
-		    balance))
-     (define (call-the-cops )
-       (error "the cops is coming"))
+          (let ((count 0)) 
+    (define (withdraw amount)
+      (if  (>= balance amount)
+	   (begin (set! balance (- balance amount))
+		  balance)
+	   "Insufficient funds"))  
+    (define (deposit amount)
+      (begin   (set! balance (+ balance amount))
+	       balance))
+    (define (call-the-cops useless)
+      (error "the cops is coming\n"))
+    (define (display-message-error useless-arg)
+      (display "Incorrect password\n"))
+    (define (handle-password-error count)
+      (if (= count 7)
+	  call-the-cops
+	  display-message-error))
     (define (dispatch  password m)
-      (let  ((count 0)) 
-	(if   (eq? password correct-password)
-	      (cond ((eq? m 'withdraw) withdraw)
-		    ((eq? m 'deposit) deposit)
-		    (else (error "Unknown request -- MAKE-ACCOUNT"
-				 m)))
-	      (begin   (set! count (+  count 1))
-		           (if (= count 7)
-			       (call-the-cops)
-			       (error "Incorrect password" count))))))
-dispatch)
+      
+      (if   (eq? password correct-password)
+	    (cond ((eq? m 'withdraw) withdraw)
+		  ((eq? m 'deposit) deposit)
+		  (else (error "Unknown request -- MAKE-ACCOUNT"
+			       m)))
+	    (begin (set! count (+ 1 count))
+		   (handle-password-error count))))
+    dispatch))
 
 
 (define acc (make-account 100 'secret-password))
-((acc  'secret-password 'withdraw ) 50)
+((acc 'secret-password 'withdraw) 50)
 ((acc 'some-other-password 'withdraw) 60)
 ((acc 'secret-password 'deposit) 40)
+
 
 
 
