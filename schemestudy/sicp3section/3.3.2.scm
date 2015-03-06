@@ -1,9 +1,8 @@
-#lang planet neil/sicp
-
-(require scheme/mpair)
-(set-mcar! 'a (list 'b 'c))
-
-(set-car! 'tiancai (list 'a 'b))
+(define  (set-car! a b )
+         (cons b (cdr a)))
+(define (set-cdr! a b)
+          (cons (car a) b))
+(set-car! (list 'tiancai) (list 'a 'b))
 (list 'a 'b)
 
 ;;; 队列的表示
