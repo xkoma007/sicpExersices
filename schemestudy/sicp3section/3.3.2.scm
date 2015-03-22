@@ -2,12 +2,17 @@
          (cons b (cdr a)))
 (define (set-cdr! a b)
           (cons (car a) b))
-(set-car! (list 'tiancai) (list 'a 'b))
-(list 'a 'b)
+(define A (cons  (list 'a) (cons 'b '())) )
+(define B (cons (list  'c) (cons 'd '()) ))
+
+A
+B
+(set-car! A B)
+(set-cdr! A B)
 
 ;;; 队列的表示
 (set-car! 'tiancai (list 'a 'b))
-(list 'a 'b)
+
 
 ;;; 队列的表示
 (define (front-ptr queue) (car queue))
@@ -19,21 +24,23 @@
 (define (make-queue) (cons '() '()))
 
 
+
+
 (define (front-queue queue)
               (if  (empty-queue? queue)
 		   (error "FRONT called with an empty queue" queue)
 		   (car (front-ptr queue))))
 
 (define (insert-queue! queue item)
-     (let ((new-pair (cons item '())))
+     (let   ((new-pair (cons item '())))
         (cond  ((empty-queue? queue)
-		     (set-front-ptr! queue new-pair)
+		        (set-front-ptr! queue new-pair)
+			(set-rear-ptr! queue new-pair)
+			queue)
+	            (else 
+		     (set-cdr! (rear-ptr queue) new-pair)
 		     (set-rear-ptr! queue new-pair)
-		     queue)
-	       (else 
-		  (set-cdr! (rear-ptr queue) new-pair)
-		  (set-rear-ptr! queue new-pair)
-		  queue))))
+		     queue))))
 
 (define (delete-queue! queue)
     (cond ((empty-queue? queue)
@@ -43,7 +50,9 @@
 	       queue)))
 
 (define  q1 (make-queue))
-(insert-queue! q1 'a)
+(insert-queue! q1 'ab)
+(list 'a 'b)
+(insert-queue! q1 'b)
 
 
 
