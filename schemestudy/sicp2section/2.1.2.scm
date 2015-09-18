@@ -1,4 +1,5 @@
 
+;; test 2.2
 
 (define (start-segment x)
   (car x))
@@ -32,7 +33,7 @@
 
 (print-point f)
 
-
+;;; test 2.3
 
 ;愿望思维
 
