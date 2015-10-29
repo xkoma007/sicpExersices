@@ -30,8 +30,3 @@
 ;;; test 3.6
 
 
-(define a
-(lambda (x) 
-  (+ x 2) 4))
-
-(a 5)
